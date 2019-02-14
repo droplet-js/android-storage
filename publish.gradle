@@ -54,6 +54,93 @@ if (project.getPlugins().hasPlugin('com.android.library')) {
                 archives javadocJar
                 archives sourcesJar
             }
+
+            install {
+                repositories.mavenInstaller {
+                    pom.project {
+                        packaging project.getPlugins().hasPlugin('com.android.library') ? "aar" : 'jar'
+
+                        groupId GROUP_ID
+                        artifactId project.name.replace('-', "-${flavorName}-")
+                        version = VERSION_NAME
+
+                        name project.name.replace('-', "-${flavorName}-")
+                        description project.name.replace('-', "-${flavorName}-")
+                        url SITE_URL
+
+                        licenses {
+                            license {
+                                name LICENSE_APACHE_NAME
+                                url LICENSE_APACHE_URL
+                            }
+                        }
+
+                        developers {
+                            developer {
+                                id DEVELOPER_ID
+                                name DEVELOPER_NAME
+                                email DEVELOPER_EMAIL
+                            }
+                        }
+
+                        issueManagement {
+                            system ISSUE_SYSTEM
+                            url ISSUE_TRACKER_URL
+                        }
+
+                        scm {
+                            url SITE_URL
+                            connection GIT_URL
+                            developerConnection GIT_URL
+                        }
+                    }
+                }
+            }
+
+            artifactory {
+                contextUrl = 'https://oss.jfrog.org/artifactory'
+
+                resolve {
+                    repository {
+                        repoKey = 'libs-release'
+                    }
+                }
+
+                publish {
+                    repository {
+                        repoKey = 'oss-snapshot-local'
+                        username = BINTRAY_USER
+                        password = BINTRAY_API_KEY
+                        maven = true
+                    }
+
+                    defaults {
+                        publishConfigs('archives')
+                        publishArtifacts = true
+                    }
+                }
+            }
+
+            bintray {
+                user = BINTRAY_USER
+                key = BINTRAY_API_KEY
+
+                configurations = ['archives'] //When uploading configuration files
+
+                pkg {
+                    repo = 'maven'
+                    name = project.name.replace('-', "-${flavorName}-")
+                    desc = project.name.replace('-', "-${flavorName}-")
+                    websiteUrl = SITE_URL
+                    vcsUrl = GIT_URL
+                    issueTrackerUrl = ISSUE_TRACKER_URL
+                    licenses = LICENSES_ALL
+                    dryRun = false
+                    publish = true
+                    override = false
+                    publicDownloadNumbers = true
+                }
+            }
         }
     }
 } else {
@@ -71,6 +158,93 @@ if (project.getPlugins().hasPlugin('com.android.library')) {
         archives javadocJar
         archives sourcesJar
     }
+
+    install {
+        repositories.mavenInstaller {
+            pom.project {
+                packaging 'jar'
+
+                groupId GROUP_ID
+                artifactId project.name
+                version = VERSION_NAME
+
+                name project.name
+                description project.name
+                url SITE_URL
+
+                licenses {
+                    license {
+                        name LICENSE_APACHE_NAME
+                        url LICENSE_APACHE_URL
+                    }
+                }
+
+                developers {
+                    developer {
+                        id DEVELOPER_ID
+                        name DEVELOPER_NAME
+                        email DEVELOPER_EMAIL
+                    }
+                }
+
+                issueManagement {
+                    system ISSUE_SYSTEM
+                    url ISSUE_TRACKER_URL
+                }
+
+                scm {
+                    url SITE_URL
+                    connection GIT_URL
+                    developerConnection GIT_URL
+                }
+            }
+        }
+    }
+
+    artifactory {
+        contextUrl = 'https://oss.jfrog.org/artifactory'
+
+        resolve {
+            repository {
+                repoKey = 'libs-release'
+            }
+        }
+
+        publish {
+            repository {
+                repoKey = 'oss-snapshot-local'
+                username = BINTRAY_USER
+                password = BINTRAY_API_KEY
+                maven = true
+            }
+
+            defaults {
+                publishConfigs('archives')
+                publishArtifacts = true
+            }
+        }
+    }
+
+    bintray {
+        user = BINTRAY_USER
+        key = BINTRAY_API_KEY
+
+        configurations = ['archives'] //When uploading configuration files
+
+        pkg {
+            repo = 'maven'
+            name = project.name
+            desc = project.name
+            websiteUrl = SITE_URL
+            vcsUrl = GIT_URL
+            issueTrackerUrl = ISSUE_TRACKER_URL
+            licenses = LICENSES_ALL
+            dryRun = false
+            publish = true
+            override = false
+            publicDownloadNumbers = true
+        }
+    }
 }
 
 if (JavaVersion.current().isJava8Compatible()) {
@@ -80,91 +254,3 @@ if (JavaVersion.current().isJava8Compatible()) {
         }
     }
 }
-
-install {
-    repositories.mavenInstaller {
-        pom.project {
-            packaging project.getPlugins().hasPlugin('com.android.library') ? "aar" : 'jar'
-
-            groupId GROUP_ID
-            artifactId project.name
-            version = VERSION_NAME
-
-            name project.name
-            description project.name
-            url SITE_URL
-
-            licenses {
-                license {
-                    name LICENSE_APACHE_NAME
-                    url LICENSE_APACHE_URL
-                }
-            }
-
-            developers {
-                developer {
-                    id DEVELOPER_ID
-                    name DEVELOPER_NAME
-                    email DEVELOPER_EMAIL
-                }
-            }
-
-            issueManagement {
-                system ISSUE_SYSTEM
-                url ISSUE_TRACKER_URL
-            }
-
-            scm {
-                url SITE_URL
-                connection GIT_URL
-                developerConnection GIT_URL
-            }
-        }
-    }
-}
-
-artifactory {
-    contextUrl = 'https://oss.jfrog.org/artifactory'
-
-    resolve {
-        repository {
-            repoKey = 'libs-release'
-        }
-    }
-
-    publish {
-        repository {
-            repoKey = 'oss-snapshot-local'
-            username = BINTRAY_USER
-            password = BINTRAY_API_KEY
-            maven = true
-        }
-
-        defaults {
-            publishConfigs('archives')
-            publishArtifacts = true
-        }
-    }
-}
-
-bintray {
-    user = BINTRAY_USER
-    key = BINTRAY_API_KEY
-
-    configurations = ['archives'] //When uploading configuration files
-
-    pkg {
-        repo = 'maven'
-        name = project.name
-        desc = project.name
-        websiteUrl = SITE_URL
-        vcsUrl = GIT_URL
-        issueTrackerUrl = ISSUE_TRACKER_URL
-        licenses = LICENSES_ALL
-        dryRun = false
-        publish = true
-        override = false
-        publicDownloadNumbers = true
-    }
-}
-
