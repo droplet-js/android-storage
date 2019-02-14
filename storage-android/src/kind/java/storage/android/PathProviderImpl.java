@@ -11,7 +11,7 @@ import java.io.File;
 
 import androidx.annotation.Nullable;
 
-public class PathProviderImpl extends PathProvider {
+final class PathProviderImpl extends PathProvider {
     @Override
     public File getTemporaryDirectory(Context context) {
         File cacheDir = null;
