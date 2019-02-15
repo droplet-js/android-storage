@@ -6,6 +6,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 
+import java.io.File;
+
+import io.github.v7lin.storage.util.FileUtils;
+
 public class MainActivity extends Activity {
 
     private static final String TAG = "Storage";
@@ -28,6 +32,12 @@ public class MainActivity extends Activity {
         Log.e(TAG, "Root Directory" + Environment.getRootDirectory().getAbsolutePath());
         Log.e(TAG, "Data Directory" + Environment.getDataDirectory().getAbsolutePath());
         Log.e(TAG, "External Storage Directory" + Environment.getExternalStorageDirectory().getAbsolutePath());
+
+        File documentsDir = Environment.getExternalStorageDirectory();//getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+        String assetsFilePath = "test.txt";
+        if (FileUtils.hasAssets(this, assetsFilePath)) {
+            FileUtils.copyFromAssets(this, assetsFilePath, new File(documentsDir, assetsFilePath).getAbsolutePath());
+        }
     }
 
     //2019-02-14 15:34:52.847 31764-31764/io.github.v7lin.storage E/Storage: Cache Dir: /data/user/0/io.github.v7lin.storage/cache
