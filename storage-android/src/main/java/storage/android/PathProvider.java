@@ -12,9 +12,12 @@ import java.io.File;
 
 import androidx.annotation.Nullable;
 
-public abstract class PathProvider {
+public final class PathProvider {
 
-    public File getTemporaryDirectory(Context context) {
+    private PathProvider() {
+    }
+
+    public static File getTemporaryDirectory(Context context) {
         File cacheDir = null;
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2 ||
                 context.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, Process.myPid(), Process.myUid()) == PackageManager.PERMISSION_GRANTED) {
@@ -26,7 +29,7 @@ public abstract class PathProvider {
         return cacheDir;
     }
 
-    public File getFilesDirectory(Context context, @Nullable String type) {
+    public static File getFilesDirectory(Context context, @Nullable String type) {
         File filesDir = null;
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2 ||
                 context.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, Process.myPid(), Process.myUid()) == PackageManager.PERMISSION_GRANTED) {
@@ -44,15 +47,16 @@ public abstract class PathProvider {
         return filesDir;
     }
 
-    public File getDocumentsDirectory(Context context) {
+    public static File getDocumentsDirectory(Context context) {
         return getFilesDirectory(context, Environment.DIRECTORY_DOCUMENTS);
     }
 
-    public abstract File getPublicDirectory(Context context);
-
-    // ---
-
-    public static PathProvider provider() {
-        return new PathProviderImpl();
+    public static File getPublicDirectory(Context context) {
+        if (context.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, Process.myPid(), Process.myUid()) == PackageManager.PERMISSION_GRANTED) {
+            if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                return Environment.getExternalStorageDirectory();
+            }
+        }
+        return null;
     }
 }
