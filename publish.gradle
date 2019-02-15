@@ -9,139 +9,32 @@ apply plugin: 'com.jfrog.bintray'
 group = GROUP_ID
 version = VERSION_NAME
 
-// https://stackoverflow.com/questions/34331713/publishing-android-library-aar-to-bintray-with-chosen-flavors
-
 if (project.getPlugins().hasPlugin('com.android.library')) {
-    android.libraryVariants.all { variant ->
-        if (variant.buildType.name == "release") {
-            def flavorName = variant.flavorName
-
-            def sourcesJar = task("${flavorName}_sourcesJar", type: Jar) {
-                classifier = 'sources'
-                from android.sourceSets.main.java.srcDirs
-                if (!flavorName.isEmpty()) {
-                    from android.sourceSets[flavorName].java.srcDirs
-
-                    destinationDir = file("${buildDir}/libs/${flavorName}")
-                }
-            }
-
-            def javadoc = task("${flavorName}_javadoc", type: Javadoc) {
-                source = android.sourceSets.main.java.srcDirs
-                if (!flavorName.isEmpty()) {
-                    source += android.sourceSets[flavorName].java.srcDirs
-
-                    destinationDir = file("${buildDir}/docs/${flavorName}/javadoc")
-                }
-
-                exclude '**/BuildConfig.java'
-                exclude '**/R.java'
-
-                classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-
-                failOnError false
-            }
-
-            def javadocJar = task("${flavorName}_javadocJar", type: Jar, dependsOn: javadoc) {
-                classifier = 'javadoc'
-                from javadoc.destinationDir
-                if (!flavorName.isEmpty()) {
-                    destinationDir = file("${buildDir}/libs/${flavorName}")
-                }
-            }
-
-            artifacts {
-                archives javadocJar
-                archives sourcesJar
-            }
-
-            install {
-                repositories.mavenInstaller {
-                    pom.project {
-                        packaging project.getPlugins().hasPlugin('com.android.library') ? "aar" : 'jar'
-
-                        groupId GROUP_ID
-                        artifactId project.name.replace('-', "-${flavorName}-")
-                        version = VERSION_NAME
-
-                        name project.name.replace('-', "-${flavorName}-")
-                        description project.name.replace('-', "-${flavorName}-")
-                        url SITE_URL
-
-                        licenses {
-                            license {
-                                name LICENSE_APACHE_NAME
-                                url LICENSE_APACHE_URL
-                            }
-                        }
-
-                        developers {
-                            developer {
-                                id DEVELOPER_ID
-                                name DEVELOPER_NAME
-                                email DEVELOPER_EMAIL
-                            }
-                        }
-
-                        issueManagement {
-                            system ISSUE_SYSTEM
-                            url ISSUE_TRACKER_URL
-                        }
-
-                        scm {
-                            url SITE_URL
-                            connection GIT_URL
-                            developerConnection GIT_URL
-                        }
-                    }
-                }
-            }
-
-            artifactory {
-                contextUrl = 'https://oss.jfrog.org/artifactory'
-
-                resolve {
-                    repository {
-                        repoKey = 'libs-release'
-                    }
-                }
-
-                publish {
-                    repository {
-                        repoKey = 'oss-snapshot-local'
-                        username = BINTRAY_USER
-                        password = BINTRAY_API_KEY
-                        maven = true
-                    }
-
-                    defaults {
-                        publishConfigs('archives')
-                        publishArtifacts = true
-                    }
-                }
-            }
-
-            bintray {
-                user = BINTRAY_USER
-                key = BINTRAY_API_KEY
-
-                configurations = ['archives'] //When uploading configuration files
-
-                pkg {
-                    repo = 'maven'
-                    name = project.name.replace('-', "-${flavorName}-")
-                    desc = project.name.replace('-', "-${flavorName}-")
-                    websiteUrl = SITE_URL
-                    vcsUrl = GIT_URL
-                    issueTrackerUrl = ISSUE_TRACKER_URL
-                    licenses = LICENSES_ALL
-                    dryRun = false
-                    publish = true
-                    override = false
-                    publicDownloadNumbers = true
-                }
-            }
+    task sourcesJar(type: Jar) {
+        classifier = 'sources'
+        from android.sourceSets.main.java.srcDirs
+        if (FLAVOR_NAME != null && !FLAVOR_NAME.isEmpty()) {
+            from android.sourceSets[FLAVOR_NAME].java.srcDirs
         }
+    }
+
+    task javadoc(type: Javadoc) {
+        source = android.sourceSets.main.java.srcDirs
+        if (FLAVOR_NAME != null && !FLAVOR_NAME.isEmpty()) {
+            source += android.sourceSets[FLAVOR_NAME].java.srcDirs
+        }
+
+        exclude '**/BuildConfig.java'
+        exclude '**/R.java'
+
+        classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+
+        failOnError false
+    }
+
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        classifier = 'javadoc'
+        from javadoc.destinationDir
     }
 } else {
     task sourcesJar(type: Jar, dependsOn: classes) {
@@ -153,98 +46,6 @@ if (project.getPlugins().hasPlugin('com.android.library')) {
         classifier = 'javadoc'
         from javadoc.destinationDir
     }
-
-    artifacts {
-        archives javadocJar
-        archives sourcesJar
-    }
-
-    install {
-        repositories.mavenInstaller {
-            pom.project {
-                packaging 'jar'
-
-                groupId GROUP_ID
-                artifactId project.name
-                version = VERSION_NAME
-
-                name project.name
-                description project.name
-                url SITE_URL
-
-                licenses {
-                    license {
-                        name LICENSE_APACHE_NAME
-                        url LICENSE_APACHE_URL
-                    }
-                }
-
-                developers {
-                    developer {
-                        id DEVELOPER_ID
-                        name DEVELOPER_NAME
-                        email DEVELOPER_EMAIL
-                    }
-                }
-
-                issueManagement {
-                    system ISSUE_SYSTEM
-                    url ISSUE_TRACKER_URL
-                }
-
-                scm {
-                    url SITE_URL
-                    connection GIT_URL
-                    developerConnection GIT_URL
-                }
-            }
-        }
-    }
-
-    artifactory {
-        contextUrl = 'https://oss.jfrog.org/artifactory'
-
-        resolve {
-            repository {
-                repoKey = 'libs-release'
-            }
-        }
-
-        publish {
-            repository {
-                repoKey = 'oss-snapshot-local'
-                username = BINTRAY_USER
-                password = BINTRAY_API_KEY
-                maven = true
-            }
-
-            defaults {
-                publishConfigs('archives')
-                publishArtifacts = true
-            }
-        }
-    }
-
-    bintray {
-        user = BINTRAY_USER
-        key = BINTRAY_API_KEY
-
-        configurations = ['archives'] //When uploading configuration files
-
-        pkg {
-            repo = 'maven'
-            name = project.name
-            desc = project.name
-            websiteUrl = SITE_URL
-            vcsUrl = GIT_URL
-            issueTrackerUrl = ISSUE_TRACKER_URL
-            licenses = LICENSES_ALL
-            dryRun = false
-            publish = true
-            override = false
-            publicDownloadNumbers = true
-        }
-    }
 }
 
 if (JavaVersion.current().isJava8Compatible()) {
@@ -252,5 +53,97 @@ if (JavaVersion.current().isJava8Compatible()) {
         tasks.withType(Javadoc) {
             options.addStringOption('Xdoclint:none', '-quiet')
         }
+    }
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+install {
+    repositories.mavenInstaller {
+        pom.project {
+            packaging project.getPlugins().hasPlugin('com.android.library') ? "aar" : 'jar'
+
+            groupId GROUP_ID
+            artifactId FLAVOR_NAME != null && !FLAVOR_NAME.isEmpty() ? project.name.replace('-', "-${FLAVOR_NAME}-") : project.name
+            version = VERSION_NAME
+
+            name FLAVOR_NAME != null && !FLAVOR_NAME.isEmpty() ? project.name.replace('-', "-${FLAVOR_NAME}-") : project.name
+            description FLAVOR_NAME != null && !FLAVOR_NAME.isEmpty() ? project.name.replace('-', "-${FLAVOR_NAME}-") : project.name
+            url SITE_URL
+
+            licenses {
+                license {
+                    name LICENSE_APACHE_NAME
+                    url LICENSE_APACHE_URL
+                }
+            }
+
+            developers {
+                developer {
+                    id DEVELOPER_ID
+                    name DEVELOPER_NAME
+                    email DEVELOPER_EMAIL
+                }
+            }
+
+            issueManagement {
+                system ISSUE_SYSTEM
+                url ISSUE_TRACKER_URL
+            }
+
+            scm {
+                url SITE_URL
+                connection GIT_URL
+                developerConnection GIT_URL
+            }
+        }
+    }
+}
+
+artifactory {
+    contextUrl = 'https://oss.jfrog.org/artifactory'
+
+    resolve {
+        repository {
+            repoKey = 'libs-release'
+        }
+    }
+
+    publish {
+        repository {
+            repoKey = 'oss-snapshot-local'
+            username = BINTRAY_USER
+            password = BINTRAY_API_KEY
+            maven = true
+        }
+
+        defaults {
+            publishConfigs('archives')
+            publishArtifacts = true
+        }
+    }
+}
+
+bintray {
+    user = BINTRAY_USER
+    key = BINTRAY_API_KEY
+
+    configurations = ['archives'] //When uploading configuration files
+
+    pkg {
+        repo = 'maven'
+        name = FLAVOR_NAME != null && !FLAVOR_NAME.isEmpty() ? project.name.replace('-', "-${FLAVOR_NAME}-") : project.name
+        desc = FLAVOR_NAME != null && !FLAVOR_NAME.isEmpty() ? project.name.replace('-', "-${FLAVOR_NAME}-") : project.name
+        websiteUrl = SITE_URL
+        vcsUrl = GIT_URL
+        issueTrackerUrl = ISSUE_TRACKER_URL
+        licenses = LICENSES_ALL
+        dryRun = false
+        publish = true
+        override = false
+        publicDownloadNumbers = true
     }
 }

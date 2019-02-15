@@ -26,7 +26,12 @@ android {
         }
     }
 
-    publishNonDefault true
+    if (FLAVOR_NAME != null && !FLAVOR_NAME.isEmpty()) {
+//    publishNonDefault true
+        defaultPublishConfig "${FLAVOR_NAME}Release"
+    } else {
+        publishNonDefault true
+    }
 
     flavorDimensions 'default'
 

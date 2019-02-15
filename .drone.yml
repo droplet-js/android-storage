@@ -11,7 +11,7 @@ steps:
   - ./gradlew :storage-android:clean :storage-android:build
   - ./gradlew :app:clean :app:build
 
-#- name: snapshot
+#- name: snapshot-kind
 #  image: runmymind/docker-android-sdk
 #  volumes:
 #  - name: gradle
@@ -24,13 +24,34 @@ steps:
 #      from_secret: BINTRAY_API_KEY
 #    VERSION_CODE: ${DRONE_BUILD_NUMBER}
 #    VERSION_NAME: 0.0.1-SNAPSHOT
+#    FLAVOR_NAME: kind
+#  commands:
+#  - ./gradlew :storage-android:clean :storage-android:install :storage-android:artifactoryPublish
+#  when:
+#    event:
+#    - push
+#
+#- name: snapshot-trouble
+#  image: runmymind/docker-android-sdk
+#  volumes:
+#  - name: gradle
+#    path: /root/.gradle
+#  environment:
+#    PUBLISH_TO_JFROG: true
+#    BINTRAY_USER:
+#      from_secret: BINTRAY_USER
+#    BINTRAY_API_KEY:
+#      from_secret: BINTRAY_API_KEY
+#    VERSION_CODE: ${DRONE_BUILD_NUMBER}
+#    VERSION_NAME: 0.0.1-SNAPSHOT
+#    FLAVOR_NAME: trouble
 #  commands:
 #  - ./gradlew :storage-android:clean :storage-android:install :storage-android:artifactoryPublish
 #  when:
 #    event:
 #    - push
 
-- name: release
+- name: release-kind
   image: runmymind/docker-android-sdk
   volumes:
   - name: gradle
@@ -43,6 +64,27 @@ steps:
       from_secret: BINTRAY_API_KEY
     VERSION_CODE: ${DRONE_BUILD_NUMBER}
     VERSION_NAME: 0.0.1
+    FLAVOR_NAME: kind
+  commands:
+  - ./gradlew :storage-android:clean :storage-android:install :storage-android:bintrayUpload
+  when:
+    event:
+    - tag
+
+- name: release-trouble
+  image: runmymind/docker-android-sdk
+  volumes:
+  - name: gradle
+    path: /root/.gradle
+  environment:
+    PUBLISH_TO_JCENTER: true
+    BINTRAY_USER:
+      from_secret: BINTRAY_USER
+    BINTRAY_API_KEY:
+      from_secret: BINTRAY_API_KEY
+    VERSION_CODE: ${DRONE_BUILD_NUMBER}
+    VERSION_NAME: 0.0.1
+    FLAVOR_NAME: trouble
   commands:
   - ./gradlew :storage-android:clean :storage-android:install :storage-android:bintrayUpload
   when:
