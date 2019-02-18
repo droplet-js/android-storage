@@ -121,6 +121,8 @@ artifactory {
         }
 
         defaults {
+            name = FLAVOR_NAME != null && !FLAVOR_NAME.isEmpty() ? project.name.replace('-', "-${FLAVOR_NAME}-") : project.name
+
             publishConfigs('archives')
             publishArtifacts = true
         }
