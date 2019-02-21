@@ -67,11 +67,11 @@ install {
             packaging project.getPlugins().hasPlugin('com.android.library') ? "aar" : 'jar'
 
             groupId GROUP_ID
-            artifactId FLAVOR_NAME != null && !FLAVOR_NAME.isEmpty() ? project.name.replace('-', "-${FLAVOR_NAME}-") : project.name
+            artifactId FLAVOR_NAME != null && !FLAVOR_NAME.isEmpty() ? project.name.replace('-android', "-${FLAVOR_NAME}-android") : project.name
             version = VERSION_NAME
 
-            name FLAVOR_NAME != null && !FLAVOR_NAME.isEmpty() ? project.name.replace('-', "-${FLAVOR_NAME}-") : project.name
-            description FLAVOR_NAME != null && !FLAVOR_NAME.isEmpty() ? project.name.replace('-', "-${FLAVOR_NAME}-") : project.name
+            name FLAVOR_NAME != null && !FLAVOR_NAME.isEmpty() ? project.name.replace('-android', "-${FLAVOR_NAME}-android") : project.name
+            description FLAVOR_NAME != null && !FLAVOR_NAME.isEmpty() ? project.name.replace('-android', "-${FLAVOR_NAME}-android") : project.name
             url SITE_URL
 
             licenses {
@@ -121,7 +121,7 @@ artifactory {
         }
 
         defaults {
-            name = FLAVOR_NAME != null && !FLAVOR_NAME.isEmpty() ? project.name.replace('-', "-${FLAVOR_NAME}-") : project.name
+            name = FLAVOR_NAME != null && !FLAVOR_NAME.isEmpty() ? project.name.replace('-android', "-${FLAVOR_NAME}-android") : project.name
 
             publishConfigs('archives')
             publishArtifacts = true
@@ -137,8 +137,8 @@ bintray {
 
     pkg {
         repo = 'maven'
-        name = FLAVOR_NAME != null && !FLAVOR_NAME.isEmpty() ? project.name.replace('-', "-${FLAVOR_NAME}-") : project.name
-        desc = FLAVOR_NAME != null && !FLAVOR_NAME.isEmpty() ? project.name.replace('-', "-${FLAVOR_NAME}-") : project.name
+        name = FLAVOR_NAME != null && !FLAVOR_NAME.isEmpty() ? project.name.replace('-android', "-${FLAVOR_NAME}-android") : project.name
+        desc = FLAVOR_NAME != null && !FLAVOR_NAME.isEmpty() ? project.name.replace('-android', "-${FLAVOR_NAME}-android") : project.name
         websiteUrl = SITE_URL
         vcsUrl = GIT_URL
         issueTrackerUrl = ISSUE_TRACKER_URL
