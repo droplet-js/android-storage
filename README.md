@@ -1,5 +1,9 @@
 # android-storage
 
+[![Build Status](https://cloud.drone.io/api/badges/v7lin/android-storage/status.svg)](https://cloud.drone.io/v7lin/android-storage)
+[ ![Download](https://api.bintray.com/packages/v7lin/maven/storage-kind-android/images/download.svg) ](https://bintray.com/v7lin/maven/storage-kind-android/_latestVersion)
+[ ![Download](https://api.bintray.com/packages/v7lin/maven/storage-trouble-android/images/download.svg) ](https://bintray.com/v7lin/maven/storage-trouble-android/_latestVersion)
+
 ### snapshot
 
 ````
