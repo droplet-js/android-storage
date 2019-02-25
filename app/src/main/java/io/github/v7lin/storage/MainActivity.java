@@ -33,7 +33,7 @@ public class MainActivity extends Activity {
         Log.e(TAG, "Data Directory" + Environment.getDataDirectory().getAbsolutePath());
         Log.e(TAG, "External Storage Directory" + Environment.getExternalStorageDirectory().getAbsolutePath());
 
-        File documentsDir = Environment.getExternalStorageDirectory();//getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+        File documentsDir = Environment.getExternalStorageDirectory(); // getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
         String assetsFilePath = "test.txt";
         if (FileUtils.hasAssets(this, assetsFilePath)) {
             FileUtils.copyFromAssets(this, assetsFilePath, new File(documentsDir, assetsFilePath).getAbsolutePath());

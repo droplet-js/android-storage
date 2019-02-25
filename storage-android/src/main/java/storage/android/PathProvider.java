@@ -19,8 +19,8 @@ public final class PathProvider {
 
     public static File getTemporaryDirectory(Context context) {
         File cacheDir = null;
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2 ||
-                context.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, Process.myPid(), Process.myUid()) == PackageManager.PERMISSION_GRANTED) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2
+                || context.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, Process.myPid(), Process.myUid()) == PackageManager.PERMISSION_GRANTED) {
             cacheDir = context.getExternalCacheDir();
         }
         if (cacheDir == null) {
@@ -31,8 +31,8 @@ public final class PathProvider {
 
     public static File getFilesDirectory(Context context, @Nullable String type) {
         File filesDir = null;
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2 ||
-                context.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, Process.myPid(), Process.myUid()) == PackageManager.PERMISSION_GRANTED) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2
+                || context.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, Process.myPid(), Process.myUid()) == PackageManager.PERMISSION_GRANTED) {
             filesDir = context.getExternalFilesDir(type);
         }
         if (filesDir == null) {
