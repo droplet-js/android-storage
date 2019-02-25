@@ -117,7 +117,7 @@ subprojects {
 
         // ---
 
-        androidxAnnotationVersion = '1.0.0'
+        jsr305Version = '2.0.1'
 
         // ---
 
@@ -125,6 +125,22 @@ subprojects {
 
         runnerVersion = '1.1.0-alpha4'
         espressoVersion = '3.1.0-alpha4'
+    }
+
+    plugins.apply('checkstyle')
+
+    task('checkstyle', type: Checkstyle) {
+        configFile rootProject.file('checkstyle.xml')
+        source 'src/main/java'
+        ignoreFailures false
+        showViolations true
+        include '**/*.java'
+
+        classpath = files()
+    }
+
+    afterEvaluate {
+        tasks.findByName('check').dependsOn('checkstyle')
     }
 }
 

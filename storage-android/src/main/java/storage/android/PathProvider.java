@@ -10,7 +10,7 @@ import android.text.TextUtils;
 
 import java.io.File;
 
-import androidx.annotation.Nullable;
+import javax.annotation.Nullable;
 
 public final class PathProvider {
 

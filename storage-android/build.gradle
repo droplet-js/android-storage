@@ -9,6 +9,12 @@ android {
         targetCompatibility targetCompatibilityVersion
     }
 
+    lintOptions {
+        textOutput 'stdout'
+        textReport true
+        lintConfig rootProject.file('lint.xml')
+    }
+
     defaultConfig {
         minSdkVersion androidMinSdkVersion
         targetSdkVersion androidTargetSdkVersion
@@ -47,7 +53,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation "androidx.annotation:annotation:${androidxAnnotationVersion}"
+    compileOnly "com.google.code.findbugs:jsr305:${jsr305Version}"
 }
 
 apply from: '../publish.gradle'
