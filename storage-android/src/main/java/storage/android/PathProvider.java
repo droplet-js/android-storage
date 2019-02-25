@@ -48,7 +48,7 @@ public final class PathProvider {
     }
 
     public static File getDocumentsDirectory(Context context) {
-        return getFilesDirectory(context, Environment.DIRECTORY_DOCUMENTS);
+        return getFilesDirectory(context, Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ? Environment.DIRECTORY_DOCUMENTS : "Documents");
     }
 
     public static File getPublicDirectory(Context context) {
