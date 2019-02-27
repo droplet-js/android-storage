@@ -36,6 +36,8 @@ steps:
   commands:
   - ./gradlew :storage-android:clean :storage-android:install :storage-android:artifactoryPublish
   when:
+    branch:
+    - master
     event:
     - push
 
@@ -56,6 +58,8 @@ steps:
   commands:
   - ./gradlew :storage-android:clean :storage-android:install :storage-android:artifactoryPublish
   when:
+    branch:
+    - master
     event:
     - push
 
