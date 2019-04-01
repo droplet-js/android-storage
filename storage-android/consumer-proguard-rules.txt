@@ -1,1 +1,3 @@
 # --- storage-android ---
+
+-dontwarn javax.annotation.**
